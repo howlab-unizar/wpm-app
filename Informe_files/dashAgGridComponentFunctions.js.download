@@ -1,0 +1,42 @@
+//dashAgGridComponentFunctions
+var dagcomponentfuncs = window.dashAgGridComponentFunctions = window.dashAgGridComponentFunctions || {};
+
+dagcomponentfuncs.Button = function (props) {
+    const {setData, data} = props;
+
+    function onClick() {
+        setData(data);
+    }
+    return React.createElement(
+        'button',
+        {
+            onClick: onClick,
+            className: props.className,
+        },
+        props.value
+    );
+};
+
+var dagcomponentfuncs = (window.dashAgGridComponentFunctions = window.dashAgGridComponentFunctions || {});
+
+dagcomponentfuncs.ReportLink = function (props) {
+    var reportUrl = '/report/' + props.data.id + '/' + props.data.fecha;
+    var isActive = props.data.analisis_bioseñales === 'OK';
+    // var linkText = isActive ? 'View Report' : props.data.informe;
+    var linkStyle = isActive ? {} : { pointerEvents: 'none', color: 'gray' };
+
+    if (isActive === true){
+        linkText = 'Generate Report';
+        if (props.data.informe === 'OK'){
+            linkText = 'View Report';
+        } 
+    } else {
+        linkText = props.data.informe;
+    }
+
+    return React.createElement(
+        'a',
+        { href: reportUrl, style: linkStyle },
+        linkText
+    );
+};

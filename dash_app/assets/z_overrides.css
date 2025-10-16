@@ -1,0 +1,214 @@
+/* === Reseteos para mantener el aspecto previo pese a Bootstrap === */
+
+/* Tipografía y base */
+html, body {
+  font-family: Arial, sans-serif !important;           /* igual que tu styles.css */
+  font-size: 14px;                                     /* ajusta si tu app usaba otro */
+  color: #000;                                         /* opcional */
+}
+
+/* Títulos (Bootstrap los hace muy grandes por defecto) */
+h1 { font-size: 28px !important; line-height: 1.2; font-weight: 700; margin: 0 0 .5rem 0; }
+h2 { font-size: 24px !important; line-height: 1.2; font-weight: 700; margin: 0 0 .5rem 0; }
+
+/* Botones propios (evita que Bootstrap les cambie tipografía/padding) */
+.refresh-button,
+.new-process-button,
+.accept-button,
+.cancel-button,
+.datos button {
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+  padding: 5px 10px !important;        /* respeta tus tamaños */
+  border-radius: 5px !important;
+}
+
+/* Inputs / selects de tus formularios (Bootstrap engorda paddings) */
+.datos input[type="text"],
+.datos input[type="date"],
+.datos input[type="number"],
+.datos select {
+  font-family: Arial, sans-serif !important;
+  font-size: 16px !important;          /* como en tu CSS original */
+  padding: 15px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 3px !important;
+}
+
+/* Anclas con tu color (por si Bootstrap los altera) */
+.patient-page a {
+  color: #2980b9 !important;
+  text-decoration: none !important;
+}
+.patient-page a:hover {
+  text-decoration: underline !important;
+}
+
+/* Tablas (si usas .table de Bootstrap en algún sitio) */
+.table th, .table td { padding: .5rem .5rem !important; }
+
+/* Contenedores principales (por si Bootstrap añade márgenes inesperados) */
+.content {
+  background-color: white !important;
+  padding: 20px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 10px rgba(0,0,0,.1) !important;
+}
+
+/* Modal: tipografía coherente con el resto (solo visual, sigue siendo Bootstrap) */
+.modal-content, .modal-title, .modal-body, .modal-footer, .btn-close {
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+}
+
+/* Encapsula el bloque de acciones y alinea elementos */
+.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;                 /* separación entre botones y el select */
+}
+
+/* Botones “Continuar” y “Detener” con look previo (neutraliza Bootstrap) */
+.btn-continue-process,
+.btn-stop-process {
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+
+  background: #f2f2f2 !important;
+  color: #333 !important;
+  border: 1px solid #bfbfbf !important;
+  border-radius: 4px !important;
+  padding: 5px 10px !important;
+
+  box-shadow: none !important;
+  outline: none !important;
+  text-shadow: none !important;
+
+  /* elimina estilos nativos/BS que provocan esas líneas y el “inflado” */
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: none !important;
+}
+
+.btn-continue-process:hover,
+.btn-stop-process:hover {
+  background: #e9e9e9 !important;
+}
+.btn-continue-process:active,
+.btn-stop-process:active,
+.btn-continue-process:focus,
+.btn-stop-process:focus {
+  background: #e2e2e2 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Select compacto con estilo previo */
+.process-dropdown {
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+  height: 32px !important;
+  padding: 4px 6px !important;
+  border: 1px solid #bfbfbf !important;
+  border-radius: 4px !important;
+  background-color: #fff !important;
+  box-shadow: none !important;
+  outline: none !important;
+  appearance: auto !important;           /* deja el desplegable nativo del SO */
+}
+.process-dropdown:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* === Botón ELIMINAR (React) === */
+.btn-delete-process {
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+
+  background: #f2f2f2 !important;
+  color: #333 !important;
+  border: 1px solid #bfbfbf !important;
+  border-radius: 4px !important;
+  padding: 5px 10px !important;
+
+  box-shadow: none !important;
+  outline: none !important;
+  text-shadow: none !important;
+
+  /* neutraliza estilos nativos / Bootstrap */
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: none !important;
+}
+.btn-delete-process:hover  { background: #e9e9e9 !important; }
+.btn-delete-process:active,
+.btn-delete-process:focus  { background: #e2e2e2 !important; box-shadow: none !important; outline: none !important; }
+
+/* (opcional) si quieres un “danger” leve al pasar el ratón:
+.btn-delete-process:hover  { background: #f8eaea !important; border-color: #e0b6b6 !important; }
+*/
+
+/* === Botón DESCARGAR INFORME (Dash) === */
+#download-pdf-btn {
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+
+  background: #f2f2f2 !important;
+  color: #333 !important;
+  border: 1px solid #bfbfbf !important;
+  border-radius: 4px !important;
+  padding: 5px 10px !important;
+
+  display: inline-block;               /* asegura tamaño compacto */
+  margin-bottom: 10px !important;      /* respeta tu inline style */
+
+  box-shadow: none !important;
+  outline: none !important;
+  text-shadow: none !important;
+
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: none !important;
+}
+#download-pdf-btn:hover  { background: #e9e9e9 !important; }
+#download-pdf-btn:active,
+#download-pdf-btn:focus  { background: #e2e2e2 !important; box-shadow: none !important; outline: none !important; }
+
+/* si el botón también tiene la clase 'no-print', mantenla para ocultarlo al imprimir */
+@media print {
+  .no-print { display: none !important; }
+}
+
+/* Botón IMPRIMIR con el mismo estilo “plano” */
+#print-pdf-btn {
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+
+  background: #f2f2f2 !important;
+  color: #333 !important;
+  border: 1px solid #bfbfbf !important;
+  border-radius: 4px !important;
+  padding: 5px 10px !important;
+
+  display: inline-block;
+  box-shadow: none !important;
+  outline: none !important;
+  text-shadow: none !important;
+
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-image: none !important;
+}
+#print-pdf-btn:hover  { background: #e9e9e9 !important; }
+#print-pdf-btn:active,
+#print-pdf-btn:focus  { background: #e2e2e2 !important; box-shadow: none !important; outline: none !important; }
+
+/* sigue respetando no imprimir */
+@media print {
+  .no-print { display: none !important; }
+}
