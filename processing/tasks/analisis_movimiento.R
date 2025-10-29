@@ -152,6 +152,20 @@ verisense_count_steps <- function(input_data = runif(500,min = -1.5, max = 1.5),
   return(steps_per_sec)
 }
 
+# weighted mean
+weighted_mean <- function(wd, we) {
+  if (!is.na(wd) && !is.na(we)) {
+    wMN = (wd*5 + we*2) / 7
+  } else if (is.na(we)) {
+    wMN = wd
+  } else if (is.na(wd)) {
+    wMN = we
+  } else {
+    stop("Unexpected error in weighted mean calculation!")
+  }
+  return(wMN)
+}
+
 # -------------------------------------------------------------------------
 # Principal function ------------------------------------------------------
 # -------------------------------------------------------------------------
@@ -163,7 +177,8 @@ process_data <- function(root_path, bin_dir) {
       GGIRread = "1.0.4",
       jsonlite = "1.9.1",
       GGIR = "3.2.3",
-      tools = "4.5.0"
+      tools = "4.5.0",
+      stepmetrics = "1.0.3"
     )
 
     required_github <- list(
@@ -267,9 +282,11 @@ process_data <- function(root_path, bin_dir) {
 
     steps_summary = merge(steps_total, steps_1_39spm, by = "calendar_date",
                           suffixes = c("_total", "_1_39spm"))
-    steps_summary = merge(steps_summary, steps_40_99spm, by = "calendar_date")
+    steps_summary = merge(steps_summary, steps_40_99spm, by = "calendar_date",
+                          suffixes = c("_total", "_40_99spm"))
     names(steps_summary)[ncol(steps_summary)] = "step_count_40_99spm"
-    steps_summary = merge(steps_summary, steps_100spm, by = "calendar_date")
+    steps_summary = merge(steps_summary, steps_100spm, by = "calendar_date",
+                          suffixes = c("_total", "_100spm+"))
     names(steps_summary)[ncol(steps_summary)] = "step_count_100spm+"
     paday = merge(paday, steps_summary, by = "calendar_date")
 
@@ -349,19 +366,19 @@ process_data <- function(root_path, bin_dir) {
     # steps per week
     steps_total_WE = mean(steps_total[names(steps_total) %in% c("Saturday", "Sunday")], na.rm = T)
     steps_total_WD = mean(steps_total[!names(steps_total) %in% c("Saturday", "Sunday")], na.rm = T)
-    paweek$steps_total_wei = (steps_total_WD*5 + steps_total_WE*2) / 7
+    paweek$steps_total_wei = weighted_mean(steps_total_WD, steps_total_WE)
 
     steps_1_39spm_WE = mean(steps_1_39spm[names(steps_1_39spm) %in% c("Saturday", "Sunday")], na.rm = T)
     steps_1_39spm_WD = mean(steps_1_39spm[!names(steps_1_39spm) %in% c("Saturday", "Sunday")], na.rm = T)
-    paweek$step_count_1_39spm_wei = (steps_1_39spm_WD*5 + steps_1_39spm_WE*2) / 7
+    paweek$step_count_1_39spm_wei = weighted_mean(steps_1_39spm_WD, steps_1_39spm_WE)
 
     steps_40_99spm_WE = mean(steps_40_99spm[names(steps_40_99spm) %in% c("Saturday", "Sunday")], na.rm = T)
     steps_40_99spm_WD = mean(steps_40_99spm[!names(steps_40_99spm) %in% c("Saturday", "Sunday")], na.rm = T)
-    paweek$step_count_40_99spm_wei = (steps_40_99spm_WD*5 + steps_40_99spm_WE*2) / 7
+    paweek$step_count_40_99spm_wei = weighted_mean(steps_40_99spm_WD, steps_40_99spm_WE)
 
     steps_100spm_WE = mean(steps_100spm[names(steps_100spm) %in% c("Saturday", "Sunday")], na.rm = T)
     steps_100spm_WD = mean(steps_100spm[!names(steps_100spm) %in% c("Saturday", "Sunday")], na.rm = T)
-    paweek$`step_count_100spm+_wei` = (steps_100spm_WD*5 + steps_100spm_WE*2) / 7
+    paweek$`step_count_100spm+_wei` = weighted_mean(steps_100spm_WD, steps_100spm_WE)
 
     # sleep per day
     spt_day = sleep$SptDuration
@@ -386,21 +403,21 @@ process_data <- function(root_path, bin_dir) {
     valid_weekdays   <- sum(validday & paday$weekday %in% wkdays, na.rm = TRUE)
     valid_weekends   <- sum(validday & paday$weekday %in% wkends, na.rm = TRUE)
 
-    spt_week_WD = mean(spt_day[names(spt_day) %in% wkdays], na.rm = T)*5
-    spt_week_WE = mean(spt_day[names(spt_day) %in% wkends], na.rm = T)*2
-    spt_week_avg = (spt_week_WD + spt_week_WE) / 7
+    spt_week_WD = mean(spt_day[names(spt_day) %in% wkdays], na.rm = T)
+    spt_week_WE = mean(spt_day[names(spt_day) %in% wkends], na.rm = T)
+    spt_week_avg = weighted_mean(spt_week_WD, spt_week_WE)
 
-    sleep_week_WD = mean(sleep_day[names(sleep_day) %in% wkdays], na.rm = T)*5
-    sleep_week_WE = mean(sleep_day[names(sleep_day) %in% wkends], na.rm = T)*2
-    sleep_week_avg = (sleep_week_WD + sleep_week_WE) / 7
+    sleep_week_WD = mean(sleep_day[names(sleep_day) %in% wkdays], na.rm = T)
+    sleep_week_WE = mean(sleep_day[names(sleep_day) %in% wkends], na.rm = T)
+    sleep_week_avg = weighted_mean(sleep_week_WD, sleep_week_WE)
 
-    waso_week_WD = mean(waso_day[names(waso_day) %in% wkdays], na.rm = T)*5
-    waso_week_WE = mean(waso_day[names(waso_day) %in% wkends], na.rm = T)*2
-    waso_week_avg = (waso_week_WD + waso_week_WE) / 7
+    waso_week_WD = mean(waso_day[names(waso_day) %in% wkdays], na.rm = T)
+    waso_week_WE = mean(waso_day[names(waso_day) %in% wkends], na.rm = T)
+    waso_week_avg = weighted_mean(waso_week_WD, waso_week_WE)
 
-    eff_week_WD = mean(eff_day[names(eff_day) %in% wkdays], na.rm = T)*5
-    eff_week_WE = mean(eff_day[names(eff_day) %in% wkends], na.rm = T)*2
-    eff_week_avg = (eff_week_WD + eff_week_WE) / 7
+    eff_week_WD = mean(eff_day[names(eff_day) %in% wkdays], na.rm = T)
+    eff_week_WE = mean(eff_day[names(eff_day) %in% wkends], na.rm = T)
+    eff_week_avg = weighted_mean(eff_week_WD, eff_week_WE)
 
     # Estruct results in a list:
     resultados <- list(
