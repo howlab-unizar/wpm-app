@@ -574,7 +574,7 @@ def get_habitos_actividad_fisica(datos, datos_move):
                                "border-left": "1px solid black", "border-right": "1px solid black"})
                 ])
             ])
-        ], style={"width": "102%", "border": "1px solid black", "border-collapse": "collapse",
+        ], style={"width": "100%", "border": "1px solid black", "border-collapse": "collapse",
                   "margin-bottom": "0px"}),
         html.Table([
             html.Tbody([
@@ -597,7 +597,7 @@ def get_habitos_actividad_fisica(datos, datos_move):
                                     html.Td("Cumple recomendación de la OMS",
                                             style={"text-align": "center", "width": "30%", "padding": "10px", "font-size": "18px", "font-family": "Verdana, sans-serif"}),
                                     html.Td(f"{check_si_cumple_fuerza} Sí  {check_no_cumple_fuerza} No",
-                                            style={"text-align": "left", "width": "400px", "padding": "10px", "font-size": "18px", "font-family": "Verdana, sans-serif"})
+                                            style={"text-align": "left", "width": "25%", "padding": "10px", "font-size": "18px", "font-family": "Verdana, sans-serif"})
                                 ])
                             ] + ([
                                 html.Tr([
@@ -619,7 +619,7 @@ def get_habitos_actividad_fisica(datos, datos_move):
                                     html.Td(
                                         f"{check_si_cumple_equilibrio} Sí  {check_no_cumple_equilibrio} No",
                                         style={"text-align": "left",
-                                               "width": "500px",
+                                               "width": "25%",
                                                "padding": "10px", "font-size": "18px", "font-family": "Verdana, sans-serif"}),
                                 ])
                             ] if n_dias_equilibrio != "-" else []))
@@ -627,7 +627,7 @@ def get_habitos_actividad_fisica(datos, datos_move):
                     ], colSpan=2, style={"padding": "10px", "border": "1px solid black"})
                 ])
             ])
-        ], style={"width": "102%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "0px"})
+        ], style={"width": "100%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "0px"})
     ], style=container_style)
 
 def _to_float(x, default=np.nan):
@@ -863,7 +863,7 @@ def get_recomendaciones_fisicas(datos, datos_move):
                     ])
                 ], style={"border": "1px solid black"})
             ] if n_dias_equilibrio != "-" else []))
-        ], style={"width": "102%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "0px"})
+        ], style={"width": "100%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "0px"})
     ], style={"padding": "5px", "margin-bottom": "0px"})
 
 def get_comportamiento_sedentario(datos_move):
@@ -1098,7 +1098,7 @@ def get_comportamiento_sedentario(datos_move):
                     ])
                 ], style={"border": "1px solid black"}),
             ])
-        ], style={"width": "102%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "0px"})
+        ], style={"width": "100%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "0px"})
     ], style={"padding": "5px", "margin-bottom": "0px"})
 
 def marcar_celda(texto, mod_vig_total,  min_fisica, max_fisica, min_sedentarismo, max_sedentarismo):
@@ -1307,7 +1307,7 @@ def riesgo_comb_act_fisica_sedentarismo(datos_move):
                     ], colSpan=5)
                 ], style={"border": "1px solid black"}),
             ])
-        ], style={"width": "102%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "0px", "margin-top": "0px"})
+        ], style={"width": "100%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "0px", "margin-top": "0px"})
     ], style={"padding": "5px", "margin-bottom": "-2px", "margin-top": "-2px"})
 
 def _as_list(x):
@@ -1626,7 +1626,7 @@ def get_sleep_habits(datos, datos_move):
                                "border-bottom": "1px solid black"})
                 ]),
             ])
-        ], style={"width": "102%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "-2px", "margin-top": "-2px"}),
+        ], style={"width": "100%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "-2px", "margin-top": "-2px"}),
         html.Table([
             html.Tbody([
                 html.Tr([
@@ -1645,7 +1645,7 @@ def get_sleep_habits(datos, datos_move):
                     ])
                 ])
             ])
-        ], style={"width": "102%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "0px"})
+        ], style={"width": "100%", "border": "1px solid black", "border-collapse": "collapse", "margin-bottom": "0px"})
     ], style={"padding": "5px", "margin-bottom": "0px"})
 
 def layout(patient_id=None, fecha=None, render_mode="web", **kwargs):
@@ -1723,6 +1723,10 @@ def generate_pdf(patient_id, patient_date):
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--remote-debugging-port=9222")
+    # Fijar el factor de escala a 1 para que el PDF sea siempre del mismo tamaño
+    # independientemente de la versión de Chrome, DPI del SO o configuración de monitor
+    chrome_options.add_argument("--force-device-scale-factor=1")
+    chrome_options.add_argument("--high-dpi-support=1")
     driver_dir = os.path.dirname(ChromeDriverManager().install())
     # busca el .exe dentro de esa carpeta
     exe_path = glob.glob(os.path.join(driver_dir, '*.exe'))[0]
@@ -1730,23 +1734,30 @@ def generate_pdf(patient_id, patient_date):
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     try:
-        print(f"🌐 Abriendo {url}...")
-        driver.set_window_size(1175, 100)
+        # Ventana de 1175px: con scale=0.65 → 1175×0.65 ≈ 764px, que ocupa
+        # correctamente el ancho imprimible de A4 (~717px útil + márgenes).
+        # IMPORTANTE: en Chrome headless Plotly NO hace resize automático al cargar,
+        # hay que forzarlo con JS después para que los gráficos llenen su contenedor.
+        driver.set_window_size(1175, 900)
         driver.get(url)
 
-        # Esperar hasta que los gráficos de Plotly estén cargados completamente
+        # Esperar hasta que los gráficos de Plotly estén presentes en el DOM
         wait = WebDriverWait(driver, 30)
         wait.until(EC.presence_of_element_located((By.CLASS_NAME, "js-plotly-plot")))
 
+        # Forzar un evento resize para que Plotly recalcule el ancho de cada gráfico.
+        # En Chrome headless el ResizeObserver no se dispara automáticamente.
+        driver.execute_script("window.dispatchEvent(new Event('resize'));")
+        time.sleep(1.5)  # Esperar a que Plotly complete el redibujado
+
         print(f"📄 Generando PDF en {output_pdf}...")
 
-        # Obtener el PDF en base64 en vez de hexadecimal
         pdf = driver.execute_cdp_cmd("Page.printToPDF",
     {
                 "format": "A4",
-                "scale": 0.88,               # 80% del tamaño original
-                "printBackground": False,    # incluye fondos y colores
-                "marginTop": 0.4,           # en pulgadas
+                "scale": 0.65,
+                "printBackground": False,
+                "marginTop": 0.2,
                 "marginBottom": 0.2,
                 "marginLeft": 0.4,
                 "marginRight": 0.4

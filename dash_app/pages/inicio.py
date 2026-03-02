@@ -13,13 +13,10 @@ from processing.actions_handler import stop_pipeline, continue_pipeline, execute
 # Registrar la página y obtener archivos no procesados
 dash.register_page(
     __name__,
-    path_template="/trabajos",
+    path="/trabajos",
     title="Trabajos",
     name="Trabajos"
 )
-
-# Inicializar estado
-datos_no_procesados = get_files(processed=False)
 
 error_modal = dbc.Modal(
     id="error-modal",
@@ -54,7 +51,7 @@ columnDefs = [
     {"headerName": "Acciones", "field": "actions", "cellRenderer": "ButtonGroupRenderer", "width": 375}
 ]
 
-def layout(patientsNotProcessed=datos_no_procesados, **kwargs):
+def layout(**kwargs):
     """
     Define el layout de la página de inicio.
 
@@ -64,6 +61,7 @@ def layout(patientsNotProcessed=datos_no_procesados, **kwargs):
     Returns:
     html.Div: Elementos HTML que conforman la página.
     """
+    datos_no_procesados = get_files(processed=False)
     return html.Div([
         html.H2('Trabajos del Día Actual'),
         html.Button('Actualizar', id='refresh-no-procesados-button', className='refresh-button'),
@@ -73,7 +71,7 @@ def layout(patientsNotProcessed=datos_no_procesados, **kwargs):
             dag.AgGrid(
                 id='no-procesados-grid',
                 columnDefs=columnDefs,
-                rowData=patientsNotProcessed,
+                rowData=datos_no_procesados,
                 defaultColDef={"resizable": True, "sortable": True, "filter": True},
                 style={"height": "100%", "width": "100%"},
                 className="ag-theme-alpine",

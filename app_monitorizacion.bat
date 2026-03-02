@@ -1,7 +1,7 @@
 @echo off
 set root=%USERPROFILE%\Desktop\aplicacion-de-monitorizacion
 cd /d "%root%"
-echo Iniciando aplicación Dash...
+echo Iniciando aplicacion Dash...
 
 REM (Opcional) Activar el entorno virtual si existe
 if exist .venv\Scripts\activate (
@@ -9,8 +9,6 @@ if exist .venv\Scripts\activate (
 )
 
 REM Ejecutar la aplicación
-start /b python -m dash_app.app
-timeout /t 5 >nul
+python -m dash_app.app 2>nul
 
-echo Aplicación en ejecución...
-pause
+exit

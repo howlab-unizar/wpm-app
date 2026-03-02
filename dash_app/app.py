@@ -1,7 +1,8 @@
 # dash_app/app.py
 import os
 import logging
-import threading, time, requests, webbrowser
+import threading, time, requests
+import webview
 import dash_bootstrap_components as dbc
 from dash import Dash, dcc, html, Input, Output, callback
 import dash
@@ -89,7 +90,7 @@ app.index_string = '''<!DOCTYPE html>
 
 tabs = html.Div(
     [
-        dcc.Tabs(id= 'tabs', value= 'nada', children=[
+        dcc.Tabs(id= 'tabs', value= 'tab-trabajos', children=[
             dcc.Tab(label= 'Trabajos', value= 'tab-trabajos', className= 'tab-style'),
             dcc.Tab(label= 'Histórico', value= 'tab-historico', className= 'tab-style')
         ], className= 'custom-tabs'),
@@ -187,22 +188,39 @@ if __name__ == '__main__':
     log = logging.getLogger('werkzeug')
     log.setLevel(logging.ERROR)
     import sys
-
     log.addHandler(logging.StreamHandler(sys.stderr))
 
+    URL = 'http://127.0.0.1:8050/'
 
     # Launch server + auto-open browser
     def run_server():
         app.run_server(debug=False, use_reloader=False)
 
-
     threading.Thread(target=run_server, daemon=True).start()
-    url = 'http://127.0.0.1:8050/'
+
+    server_ready = False
     for _ in range(60):
         try:
-            if requests.get(url, timeout=1).status_code == 200:
-                webbrowser.open(url)
+            if requests.get(URL, timeout=1).status_code == 200:
+                server_ready = True
                 break
         except:
-            time.sleep(0.5)
-    threading.Event().wait()
+            time.sleep(0.2)
+
+    if not server_ready:
+        print("❌ El servidor no arrancó a tiempo.")
+        raise SystemExit(1)
+
+    window = webview.create_window(
+        title="Aplicación de Monitorización",
+        url=URL,
+        width=1400,
+        height=900,
+        resizable=True,
+        fullscreen=False,
+        min_size=(1000, 700)
+    )
+
+    # Bloquea el hilo principal hasta que el usuario cierre la ventana
+    webview.start()
+    print("\nAplicación cerrada.")
