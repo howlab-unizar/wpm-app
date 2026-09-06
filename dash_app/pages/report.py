@@ -994,7 +994,7 @@ def get_comportamiento_sedentario(datos_move):
     min_recommended_hours = 7
     max_recommended_hours = 9
 
-    extended_time = 90
+    extended_time = avg_bts_h * 60
     max_extended_time = 120
 
     if total_hours < min_recommended_hours:
